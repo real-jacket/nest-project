@@ -14,10 +14,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RedisService } from '../redis/redis.service';
+import { Public } from './login.decrator';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
   @Inject(RedisService)
   private redisService: RedisService;
@@ -48,6 +53,7 @@ export class UserController {
   }
 
   @Post('login')
+  @Public()
   async login(@Body() loginUserDto: LoginUserDto) {
     const { email, code } = loginUserDto;
 
@@ -66,6 +72,13 @@ export class UserController {
       throw new UnauthorizedException('该邮箱没有绑定用户');
     }
 
-    return 'succuss';
+    const payload = {
+      sub: user.id,
+      username: user.username,
+    };
+
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
   }
 }

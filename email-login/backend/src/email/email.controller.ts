@@ -1,6 +1,7 @@
 import { Controller, Get, Inject, Query } from '@nestjs/common';
 import { EmailService } from './email.service';
 import { RedisService } from '../redis/redis.service';
+import { Public } from '../user/login.decrator';
 
 @Controller('email')
 export class EmailController {
@@ -10,6 +11,7 @@ export class EmailController {
   private redisService: RedisService;
 
   @Get('code')
+  @Public()
   async sendEmailCode(@Query('address') address) {
     const code = Math.random().toString().slice(2, 8);
 

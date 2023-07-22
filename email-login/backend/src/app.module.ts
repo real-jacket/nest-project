@@ -7,10 +7,21 @@ import { User } from './user/entities/user.entity';
 import { EmailModule } from './email/email.module';
 import { ConfigModule } from '@nestjs/config';
 import { RedisModule } from './redis/redis.module';
+import { JwtModule } from '@nestjs/jwt';
+import { AaaModule } from './aaa/aaa.module';
+import { APP_GUARD } from '@nestjs/core';
+import { LoginGuard } from './user/login.guard';
 
 @Module({
   imports: [
     UserModule,
+    JwtModule.register({
+      global: true,
+      secret: 'ke',
+      signOptions: {
+        expiresIn: '7d',
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: 'src/.env',
@@ -33,8 +44,15 @@ import { RedisModule } from './redis/redis.module';
     }),
     EmailModule,
     RedisModule,
+    AaaModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: LoginGuard,
+    },
+  ],
 })
 export class AppModule {}
