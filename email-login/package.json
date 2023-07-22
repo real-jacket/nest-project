@@ -1,0 +1,24 @@
+{
+  "name": "email-login",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently --names \"front,end\" -c \"auto\" \"pnpm run dev:front\" \"pnpm run dev:back\"",
+    "dev:front": "pnpm run --filter frontend start",
+    "dev:back": "pnpm run --filter backend start:dev",
+    "clean": "rimraf node_modules && rimraf frontend/node_modules && rimraf backend/node_modules",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "real-jacket",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "rimraf": "^5.0.1"
+  }
+}
