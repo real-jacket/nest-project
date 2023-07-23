@@ -58,7 +58,24 @@ function App() {
         <Form.Item label="颜色数量" name={'color'}>
           <Input />
         </Form.Item>
-        <Form.Item label="压缩级别" name="level">
+        <Form.Item
+          label="压缩级别"
+          name="level"
+          rules={[
+            {
+              validator(rule, value) {
+                if (!value) return;
+                const num = Number(value);
+                if (!num) {
+                  return Promise.reject('请输入数字');
+                }
+                if (num > 9 || num < 0) {
+                  return Promise.reject('请输入数字 0～9 ');
+                }
+              },
+            },
+          ]}
+        >
           <Input />
         </Form.Item>
         <Form.Item>
