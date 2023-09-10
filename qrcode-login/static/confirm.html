@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>扫码登录确认</title>
+    <script src="https://unpkg.com/axios@1.5.0/dist/axios.min.js"></script>
+    <style>
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #info {
+        height: 400px;
+        line-height: 400px;
+        font-size: 20px;
+        padding: 20px;
+      }
+
+      button {
+        display: block;
+        width: 80%;
+        line-height: 40px;
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      #confirm {
+        background: skyblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div c class="wrapper">
+      <button id="ke">登录ke</button>
+      <button id="ke2">登录ke2</button>
+
+      <div id="info">是否确认登录 xxx 网站？</div>
+      <button id="confirm">确认登录</button>
+
+      <button id="cancel">取消</button>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search.slice(1));
+
+      const id = params.get('id');
+
+      let token = '';
+
+      document.getElementById('ke').addEventListener('click', () => {
+        axios
+          .get('http://192.168.123.244:3000/login', {
+            params: {
+              username: 'ke',
+              password: '111',
+            },
+          })
+          .then((res) => {
+            token = res.data.token;
+            alert('ke2 登录成功');
+          })
+          .catch((err) => {
+            alert('登录失败，请重新尝试～');
+          });
+      });
+
+      document.getElementById('ke2').addEventListener('click', () => {
+        axios
+          .get('http://192.168.123.244:3000/login', {
+            params: {
+              username: 'ke2',
+              password: '222',
+            },
+          })
+          .then((res) => {
+            token = res.data.token;
+            alert('ke2 登录成功');
+          })
+          .catch((err) => {
+            alert('登录失败，请重新尝试～');
+          });
+      });
+
+      axios
+        .get('http://192.168.123.244:3000/qrcode/scan?id=' + id)
+        .catch((err) => {
+          alert('二维码已经过期');
+        });
+
+      document.getElementById('confirm').addEventListener('click', () => {
+        console.log('token: ', token);
+        axios
+          .get('http://192.168.123.244:3000/qrcode/confirm?id=' + id, {
+            headers: {
+              authorization: 'Bearer ' + token,
+            },
+          })
+          .catch((e) => {
+            alert('二维码已经过期');
+          });
+      });
+
+      document.getElementById('cancel').addEventListener('click', () => {
+        axios
+          .get('http://192.168.123.244:3000/qrcode/cancel?id=' + id)
+          .catch((e) => {
+            alert('二维码已经过期');
+          });
+      });
+    </script>
+  </body>
+</html>
