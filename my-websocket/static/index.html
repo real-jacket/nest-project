@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>my-socket</title>
+  </head>
+  <body>
+    <script>
+      const ws = new WebSocket('ws://localhost:3030');
+
+      ws.onopen = () => {
+        ws.send('发送数据');
+        setTimeout(() => {
+          ws.send('发送数据2');
+        }, 3000);
+      };
+
+      ws.onmessage = (event) => {
+        console.log('evt:', event);
+      };
+
+      ws.onclose = () => {
+        console.log('连接已关闭');
+      };
+
+      ws.onerror = () => {
+        console.log('连接出错');
+      };
+    </script>
+  </body>
+</html>
